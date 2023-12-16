@@ -20,7 +20,7 @@ export default function Reply(props) {
     const { user } = useAuthStore((state) => state);
     const [editedContent, setEditedContent] = useState(props.content);
     const navigate = useNavigate();
-    const currentUserId = parseInt(user.userId)
+    const currentUserId = parseInt(user?.userId) || null
     const [replyMode, setReplyMode] = useState(false)
 
     function toggleReplyEditMode() {
@@ -86,7 +86,7 @@ export default function Reply(props) {
         }
         else if (props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].value === 0 || props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].value === -1) {
             const value = 1
-            const replyVoteId = props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].id;
+            const replyVoteId = props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].replyVoteId;
             const updatedVote = { value }
             const res = await axios.post(`${DOMAIN}/api/replyvotes/${replyVoteId}`, updatedVote)
             if (res?.data.success) {
@@ -97,7 +97,7 @@ export default function Reply(props) {
 
     async function neutralVote() {
         const value = 0
-        const replyVoteId = props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].id;
+        const replyVoteId = props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].replyVoteId;
         const updatedVote = { value }
         const res = await axios.post(`${DOMAIN}/api/replyvotes/${replyVoteId}`, updatedVote)
         if (res?.data.success) {
@@ -120,7 +120,7 @@ export default function Reply(props) {
         }
         else if (props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].value === 0 || props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].value === 1) {
             const value = -1
-            const replyVoteId = props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].id;
+            const replyVoteId = props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].replyVoteId;
             const updatedVote = { value }
             const res = await axios.post(`${DOMAIN}/api/replyvotes/${replyVoteId}`, updatedVote)
             if (res?.data.success) {

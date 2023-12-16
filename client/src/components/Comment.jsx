@@ -86,7 +86,7 @@ export default function Comment(props) {
         }
         else if (props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].value === 0 || props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].value === -1) {
             const value = 1
-            const commentVoteId = props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].id;
+            const commentVoteId = props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].commentVoteId;
             const updatedVote = { value }
             const res = await axios.post(`${DOMAIN}/api/commentvotes/${commentVoteId}`, updatedVote)
             if (res?.data.success) {
@@ -97,7 +97,7 @@ export default function Comment(props) {
 
     async function neutralVote() {
         const value = 0
-        const commentVoteId = props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].id;
+        const commentVoteId = props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].commentVoteId;
         const updatedVote = { value }
         const res = await axios.post(`${DOMAIN}/api/commentvotes/${commentVoteId}`, updatedVote)
         if (res?.data.success) {
@@ -119,7 +119,7 @@ export default function Comment(props) {
         }
         else if (props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].value === 0 || props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].value === 1) {
             const value = -1
-            const commentVoteId = props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].id;
+            const commentVoteId = props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].commentVoteId;
             const updatedVote = { value }
             const res = await axios.post(`${DOMAIN}/api/commentvotes/${commentVoteId}`, updatedVote)
             if (res?.data.success) {
