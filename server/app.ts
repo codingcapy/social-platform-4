@@ -13,6 +13,9 @@ import dotenv from "dotenv"
 import user from "./routes/user"
 import users from "./routes/users"
 import posts from "./routes/posts"
+import comments from "./routes/comments"
+import replies from "./routes/replies"
+import postVotes from "./routes/postvotes"
 
 dotenv.config()
 const app = express()
@@ -28,6 +31,9 @@ app.get("/", (req, res) => {
 app.use("/api/users", users)
 app.use("/api/user", user)
 app.use("/api/posts", posts)
+app.use("/api/comments", comments)
+app.use("/api/replies", replies)
+app.use("/api/postvotes", postVotes)
 
 async function start() {
     try {

@@ -1,4 +1,11 @@
 
+/*
+author: Paul Kim
+date: December 16, 2023
+version: 1.0
+description: Post detailss page for CocoDogo
+ */
+
 import axios from "axios"
 import DOMAIN from "../services/endpoint";
 import { useLoaderData, useNavigate, Link } from "react-router-dom";
@@ -12,7 +19,7 @@ export default function PostDetailsPage() {
 
     const data = useLoaderData();
     const { user } = useAuthStore((state) => state);
-    const userId = getUserIdFromToken();
+    const currentUserId = parseInt(user?.userId) || null
     const [editMode, setEditMode] = useState(false)
     const [editedTitle, setEditedTitle] = useState(data.post.title);
     const [editedContent, setEditedContent] = useState(data.post.content);
@@ -54,8 +61,9 @@ export default function PostDetailsPage() {
         e.preventDefault()
         const content = e.target.content.value;
         const postId = data.post.postId;
+        const userId = currentUserId
         const username = user.username;
-        const newComment = { content, postId, username };
+        const newComment = { content, postId, userId, username };
         const res = await axios.post(`${DOMAIN}/api/comments`, newComment);
         if (res?.data.success) {
             e.target.content.value = "";
@@ -64,9 +72,9 @@ export default function PostDetailsPage() {
     }
 
     async function clickUpvote() {
-        if (!data.postVotes.find((postVote) => postVote.voterId === userId)) {
+        if (!data.postVotes.find((postVote) => postVote.voterId === currentUserId)) {
             const value = 1
-            const voterId = userId;
+            const voterId = currentUserId;
             const postId = data.post.postId;
             const vote = { value, postId, voterId };
             const res = await axios.post(`${DOMAIN}/api/postvotes`, vote);
@@ -74,9 +82,9 @@ export default function PostDetailsPage() {
                 navigate(`/posts/${data.post.postId}`);
             }
         }
-        else if (data.postVotes.filter((postVote) => postVote.voterId === parseInt(userId))[0].value === 0 || data.postVotes.filter((postVote) => postVote.voterId === parseInt(userId))[0].value === -1) {
+        else if (data.postVotes.filter((postVote) => postVote.voterId === currentUserId)[0].value === 0 || data.postVotes.filter((postVote) => postVote.voterId === parseInt(userId))[0].value === -1) {
             const value = 1
-            const postVoteId = data.postVotes.filter((postVote) => postVote.voterId === parseInt(userId))[0].id;
+            const postVoteId = data.postVotes.filter((postVote) => postVote.voterId === currentUserId)[0].postVoteId;
             const updatedVote = { value }
             const res = await axios.post(`${DOMAIN}/api/postvotes/${postVoteId}`, updatedVote)
             if (res?.data.success) {
@@ -87,7 +95,7 @@ export default function PostDetailsPage() {
 
     async function neutralVote() {
         const value = 0
-        const postVoteId = data.postVotes.filter((postVote) => postVote.voterId === parseInt(userId))[0].id;
+        const postVoteId = data.postVotes.filter((postVote) => postVote.voterId === currentUserId)[0].postVoteId;
         const updatedVote = { value }
         const res = await axios.post(`${DOMAIN}/api/postvotes/${postVoteId}`, updatedVote)
         if (res?.data.success) {
@@ -96,9 +104,9 @@ export default function PostDetailsPage() {
     }
 
     async function clickDownVote() {
-        if (!data.postVotes.find((postVote) => postVote.voterId === userId)) {
+        if (!data.postVotes.find((postVote) => postVote.voterId === currentUserId)) {
             const value = -1
-            const voterId = userId;
+            const voterId = currentUserId;
             const postId = data.post.postId;
             const vote = { value, postId, voterId };
             const res = await axios.post(`${DOMAIN}/api/postvotes`, vote);
@@ -106,9 +114,9 @@ export default function PostDetailsPage() {
                 navigate(`/posts/${data.post.postId}`);
             }
         }
-        else if (data.postVotes.filter((postVote) => postVote.voterId === parseInt(userId))[0].value === 0 || data.postVotes.filter((postVote) => postVote.voterId === parseInt(userId))[0].value === 1) {
+        else if (data.postVotes.filter((postVote) => postVote.voterId === currentUserId)[0].value === 0 || data.postVotes.filter((postVote) => postVote.voterId === parseInt(currentUserId))[0].value === 1) {
             const value = -1
-            const postVoteId = data.postVotes.filter((postVote) => postVote.voterId === parseInt(userId))[0].id;
+            const postVoteId = data.postVotes.filter((postVote) => postVote.voterId === currentUserId)[0].postVoteId;
             const updatedVote = { value }
             const res = await axios.post(`${DOMAIN}/api/postvotes/${postVoteId}`, updatedVote)
             if (res?.data.success) {
@@ -119,7 +127,7 @@ export default function PostDetailsPage() {
 
     return (
         <div className="py-10 px-10 shadow-xl">
-{editMode
+            {editMode
                 ? <div>
                     <form onSubmit={handleEditPost} className="flex flex-col">
                         <h2>Edit Post</h2>
@@ -141,18 +149,18 @@ export default function PostDetailsPage() {
                     <p>Posted by <strong>{data.post.username}</strong> on {data.post.date} {data.post.edited && "(edited)"}</p>
                     <h2 className="py-5 text-2xl text-slate-700 font-medium text-center">{data.post.title}</h2>
                     {user?.username !== data.post.username
-                        ? data.postVotes.find((postVote) => postVote.voterId === userId) !== undefined && data.postVotes.find((postVote) => postVote.voterId === userId).value > 0
+                        ? data.postVotes.find((postVote) => postVote.voterId === currentUserId) !== undefined && data.postVotes.find((postVote) => postVote.voterId === currentUserId).value > 0
                             ? user && <div onClick={neutralVote} className=""><TbArrowBigUpFilled size={25} /></div>
                             : user && <div onClick={clickUpvote} className=""><TbArrowBigUp size={25} /></div>
                         : <TbArrowBigUp size={25} />}
-                        {!user && <Link to={"/users/login"}><TbArrowBigUp size={25} /></Link>}
+                    {!user && <Link to={"/users/login"}><TbArrowBigUp size={25} /></Link>}
                     <p className="px-2"> {data.postVotes.reduce((accumulator, currentValue) => accumulator + currentValue.value, 0)}</p>
                     {user?.username !== data.post.username
-                        ? data.postVotes.find((postVote) => postVote.voterId === userId) !== undefined && data.postVotes.find((postVote) => postVote.voterId === userId).value < 0
+                        ? data.postVotes.find((postVote) => postVote.voterId === currentUserId) !== undefined && data.postVotes.find((postVote) => postVote.voterId === currentUserId).value < 0
                             ? user && <div onClick={neutralVote} className=""><TbArrowBigDownFilled size={25} /></div>
                             : user && <div onClick={clickDownVote} className=""><TbArrowBigDown size={25} /></div>
                         : <TbArrowBigDown size={25} />}
-                        {!user && <Link to={"/users/login"}><TbArrowBigDown size={25} /></Link>}
+                    {!user && <Link to={"/users/login"}><TbArrowBigDown size={25} /></Link>}
                     <p className="py-3">{data.post.content}</p>
                     {data.post.deleted ? "" : user?.username === data.post.username && <button onClick={toggleEditMode} className="px-3 py-3 font-bold">Edit</button>}
                     {data.post.deleted ? "" : user?.username === data.post.username && <button onClick={handleDeletePost} className="px-3 font-bold">Delete</button>}

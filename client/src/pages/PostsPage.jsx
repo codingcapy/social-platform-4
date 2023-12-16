@@ -1,4 +1,11 @@
 
+/*
+author: Paul Kim
+date: December 16, 2023
+version: 1.0
+description: Posts page for CocoDogo
+ */
+
 import { Link, useLoaderData } from "react-router-dom"
 import axios from "axios"
 import DOMAIN from "../services/endpoint"

@@ -1,9 +1,9 @@
 
 /*
 author: Paul Kim
-date: December 8, 2023
+date: December 15, 2023
 version: 1.0
-description: users router for CapySocial2
+description: users router for CocoDogo
  */
 
 import express from "express"
