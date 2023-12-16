@@ -18,14 +18,14 @@ export default function CreatePostPage() {
 
     const navigate = useNavigate();
     const { user } = useAuthStore((state) => state)
-    const id = getUserIdFromToken()
+    const currentUserId = parseInt(user.userId)
 
     async function handleSubmit(e) {
         e.preventDefault()
         const title = e.target.title.value;
         const content = e.target.content.value
         const username = user.username
-        const userId = id;
+        const userId = currentUserId;
         const newPost = { title, content, username, userId }
         const res = await axios.post(`${DOMAIN}/api/posts`, newPost)
         if (res?.data.success) {

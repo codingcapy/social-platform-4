@@ -186,3 +186,41 @@ export async function updatePostVote(req: Request, res: Response) {
     );
     res.status(200).json({ success: true });
 }
+
+export async function createCommentVote(req: Request, res: Response) {
+    const commentVotes = await CommentVote.find({})
+    const commentVoteId = commentVotes.length === 0 ? 1 : commentVotes[commentVotes.length - 1].commentVoteId + 1
+    const incomingVote = req.body
+    const commentVote = await CommentVote.create({ ...incomingVote, commentVoteId: commentVoteId })
+    res.status(200).json({ success: true })
+}
+
+export async function updateCommentVote(req: Request, res: Response) {
+    const commentVoteId = parseInt(req.params.commentVoteId)
+    const incomingCommentVote = req.body;
+    const updatedCommentVote = await CommentVote.findOneAndUpdate(
+        { commentVoteId: commentVoteId },
+        incomingCommentVote,
+        { new: true }
+    );
+    res.status(200).json({ success: true });
+}
+
+export async function createReplyVote(req: Request, res: Response) {
+    const replyVotes = await ReplyVote.find({})
+    const replyVoteId = replyVotes.length === 0 ? 1 : replyVotes[replyVotes.length - 1].replyVoteId + 1
+    const incomingVote = req.body
+    const replyVote = await ReplyVote.create({ ...incomingVote, replyVoteId: replyVoteId })
+    res.status(200).json({ success: true })
+}
+
+export async function updateReplyVote(req: Request, res: Response) {
+    const replyVoteId = parseInt(req.params.replyVoteId)
+    const incomingReplyVote = req.body;
+    const updatedReplyVote = await ReplyVote.findOneAndUpdate(
+        { replyVoteId: replyVoteId },
+        incomingReplyVote,
+        { new: true }
+    );
+    res.status(200).json({ success: true });
+}

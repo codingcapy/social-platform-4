@@ -20,7 +20,7 @@ export default function Reply(props) {
     const { user } = useAuthStore((state) => state);
     const [editedContent, setEditedContent] = useState(props.content);
     const navigate = useNavigate();
-    const userId = getUserIdFromToken()
+    const currentUserId = parseInt(user.userId)
     const [replyMode, setReplyMode] = useState(false)
 
     function toggleReplyEditMode() {
@@ -60,7 +60,7 @@ export default function Reply(props) {
         const content = `@${props.username} ${e.target.content.value}`;
         const postId = props.postId;
         const commentId = props.commentId;
-        const userId = parseInt(getUserIdFromToken());
+        const userId = currentUserId;
         const username = user?.username;
         const newComment = { content, postId, commentId, userId, username };
         const res = await axios.post(`${DOMAIN}/api/replies`, newComment);
@@ -72,21 +72,21 @@ export default function Reply(props) {
     }
 
     async function clickUpvote() {
-        if (!props.replyVotes.find((replyVote) => replyVote.voterId === userId)) {
+        if (!props.replyVotes.find((replyVote) => replyVote.voterId === currentUserId)) {
             const value = 1
             const postId = props.postId;
             const commentId = props.commentId
             const replyId = props.id
-            const voterId = userId;
+            const voterId = currentUserId;
             const vote = { value, postId, commentId, replyId, voterId, };
             const res = await axios.post(`${DOMAIN}/api/replyvotes`, vote);
             if (res?.data.success) {
                 navigate(`/posts/${props.postId}`);
             }
         }
-        else if (props.replyVotes.filter((replyVote) => replyVote.voterId === parseInt(userId))[0].value === 0 || props.replyVotes.filter((replyVote) => replyVote.voterId === parseInt(userId))[0].value === -1) {
+        else if (props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].value === 0 || props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].value === -1) {
             const value = 1
-            const replyVoteId = props.replyVotes.filter((replyVote) => replyVote.voterId === parseInt(userId))[0].id;
+            const replyVoteId = props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].id;
             const updatedVote = { value }
             const res = await axios.post(`${DOMAIN}/api/replyvotes/${replyVoteId}`, updatedVote)
             if (res?.data.success) {
@@ -97,7 +97,7 @@ export default function Reply(props) {
 
     async function neutralVote() {
         const value = 0
-        const replyVoteId = props.replyVotes.filter((replyVote) => replyVote.voterId === parseInt(userId))[0].id;
+        const replyVoteId = props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].id;
         const updatedVote = { value }
         const res = await axios.post(`${DOMAIN}/api/replyvotes/${replyVoteId}`, updatedVote)
         if (res?.data.success) {
@@ -106,21 +106,21 @@ export default function Reply(props) {
     }
 
     async function clickDownVote() {
-        if (!props.replyVotes.find((replyVote) => replyVote.voterId === userId)) {
+        if (!props.replyVotes.find((replyVote) => replyVote.voterId === currentUserId)) {
             const value = -1
             const postId = props.postId;
             const commentId = props.commentId
             const replyId = props.id
-            const voterId = userId;
+            const voterId = currentUserId;
             const vote = { value, postId, commentId, replyId, voterId, };
             const res = await axios.post(`${DOMAIN}/api/replyvotes`, vote);
             if (res?.data.success) {
                 navigate(`/posts/${props.postId}`);
             }
         }
-        else if (props.replyVotes.filter((replyVote) => replyVote.voterId === parseInt(userId))[0].value === 0 || props.replyVotes.filter((replyVote) => replyVote.voterId === parseInt(userId))[0].value === 1) {
+        else if (props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].value === 0 || props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].value === 1) {
             const value = -1
-            const replyVoteId = props.replyVotes.filter((replyVote) => replyVote.voterId === parseInt(userId))[0].id;
+            const replyVoteId = props.replyVotes.filter((replyVote) => replyVote.voterId === currentUserId)[0].id;
             const updatedVote = { value }
             const res = await axios.post(`${DOMAIN}/api/replyvotes/${replyVoteId}`, updatedVote)
             if (res?.data.success) {
@@ -145,16 +145,16 @@ export default function Reply(props) {
 
             <p className="">Upvotes: {props.replyVotes.reduce((accumulator, currentValue) => accumulator + currentValue.value, 0)}
                 {user?.username !== props.username
-                    ? props.replyVotes.find((replyVote) => replyVote.voterId === userId) !== undefined && props.replyVotes.find((replyVote) => replyVote.voterId === userId).value > 0
-                        ? userId && <button onClick={neutralVote} className="px-1"><TbArrowBigUpFilled size={20} /></button>
-                        : userId && <button onClick={clickUpvote} className="px-1"><TbArrowBigUp size={20} /></button>
+                    ? props.replyVotes.find((replyVote) => replyVote.voterId === currentUserId) !== undefined && props.replyVotes.find((replyVote) => replyVote.voterId === currentUserId).value > 0
+                        ? currentUserId && <button onClick={neutralVote} className="px-1"><TbArrowBigUpFilled size={20} /></button>
+                        : currentUserId && <button onClick={clickUpvote} className="px-1"><TbArrowBigUp size={20} /></button>
                     : ""}
                 {user?.username !== props.username
-                    ? props.replyVotes.find((replyVote) => replyVote.voterId === userId) !== undefined && props.replyVotes.find((replyVote) => replyVote.voterId === userId).value < 0
-                        ? userId && <button onClick={neutralVote} className="px-1"><TbArrowBigDownFilled size={20} /></button>
-                        : userId && <button onClick={clickDownVote} className="px-1"><TbArrowBigDown size={20} /></button>
+                    ? props.replyVotes.find((replyVote) => replyVote.voterId === currentUserId) !== undefined && props.replyVotes.find((replyVote) => replyVote.voterId === currentUserId).value < 0
+                        ? currentUserId && <button onClick={neutralVote} className="px-1"><TbArrowBigDownFilled size={20} /></button>
+                        : currentUserId && <button onClick={clickDownVote} className="px-1"><TbArrowBigDown size={20} /></button>
                     : ""}
-                {userId && <button onClick={toggleReplyMode} className="px-3 font-bold">Reply</button>}
+                {currentUserId && <button onClick={toggleReplyMode} className="px-3 font-bold">Reply</button>}
             </p>
             {replyMode && <div>
                 <form onSubmit={handleReplySubmit}>

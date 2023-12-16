@@ -16,6 +16,8 @@ import posts from "./routes/posts"
 import comments from "./routes/comments"
 import replies from "./routes/replies"
 import postVotes from "./routes/postvotes"
+import commentVotes from "./routes/commentVotes"
+import replyVotes from "./routes/replyVotes"
 
 dotenv.config()
 const app = express()
@@ -34,6 +36,8 @@ app.use("/api/posts", posts)
 app.use("/api/comments", comments)
 app.use("/api/replies", replies)
 app.use("/api/postvotes", postVotes)
+app.use("/api/commentvotes", commentVotes)
+app.use("/api/replyvotes", replyVotes)
 
 async function start() {
     try {

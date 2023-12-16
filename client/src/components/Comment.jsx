@@ -21,7 +21,7 @@ export default function Comment(props) {
     const { user } = useAuthStore((state) => state);
     const [editedContent, setEditedContent] = useState(props.content);
     const navigate = useNavigate();
-    const userId = parseInt(user?.userId) || null
+    const currentUserId = parseInt(user?.userId) || null
     const [replyMode, setReplyMode] = useState(false)
 
     function toggleCommentEditMode() {
@@ -61,7 +61,7 @@ export default function Comment(props) {
         const content = e.target.content.value;
         const postId = props.postId;
         const commentId = props.id;
-        const userId = parseInt(getUserIdFromToken());
+        const userId = currentUserId;
         const username = user?.username;
         const newComment = { content, postId, commentId, userId, username };
         const res = await axios.post(`${DOMAIN}/api/replies`, newComment);
@@ -73,9 +73,9 @@ export default function Comment(props) {
     }
 
     async function clickUpvote() {
-        if (!props.commentVotes.find((commentVote) => commentVote.voterId === userId)) {
+        if (!props.commentVotes.find((commentVote) => commentVote.voterId === currentUserId)) {
             const value = 1
-            const voterId = userId;
+            const voterId = currentUserId;
             const commentId = props.id
             const postId = props.postId;
             const vote = { value, postId, commentId, voterId, };
@@ -84,9 +84,9 @@ export default function Comment(props) {
                 navigate(`/posts/${props.postId}`);
             }
         }
-        else if (props.commentVotes.filter((commentVote) => commentVote.voterId === parseInt(userId))[0].value === 0 || props.commentVotes.filter((commentVote) => commentVote.voterId === parseInt(userId))[0].value === -1) {
+        else if (props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].value === 0 || props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].value === -1) {
             const value = 1
-            const commentVoteId = props.commentVotes.filter((commentVote) => commentVote.voterId === parseInt(userId))[0].id;
+            const commentVoteId = props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].id;
             const updatedVote = { value }
             const res = await axios.post(`${DOMAIN}/api/commentvotes/${commentVoteId}`, updatedVote)
             if (res?.data.success) {
@@ -97,7 +97,7 @@ export default function Comment(props) {
 
     async function neutralVote() {
         const value = 0
-        const commentVoteId = props.commentVotes.filter((commentVote) => commentVote.voterId === parseInt(userId))[0].id;
+        const commentVoteId = props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].id;
         const updatedVote = { value }
         const res = await axios.post(`${DOMAIN}/api/commentvotes/${commentVoteId}`, updatedVote)
         if (res?.data.success) {
@@ -106,9 +106,9 @@ export default function Comment(props) {
     }
 
     async function clickDownVote() {
-        if (!props.commentVotes.find((commentVote) => commentVote.voterId === userId)) {
+        if (!props.commentVotes.find((commentVote) => commentVote.voterId === currentUserId)) {
             const value = -1
-            const voterId = userId;
+            const voterId = currentUserId;
             const commentId = props.id
             const postId = props.postId;
             const vote = { value, postId, commentId, voterId, };
@@ -117,9 +117,9 @@ export default function Comment(props) {
                 navigate(`/posts/${props.postId}`);
             }
         }
-        else if (props.commentVotes.filter((commentVote) => commentVote.voterId === parseInt(userId))[0].value === 0 || props.commentVotes.filter((commentVote) => commentVote.voterId === parseInt(userId))[0].value === 1) {
+        else if (props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].value === 0 || props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].value === 1) {
             const value = -1
-            const commentVoteId = props.commentVotes.filter((commentVote) => commentVote.voterId === parseInt(userId))[0].id;
+            const commentVoteId = props.commentVotes.filter((commentVote) => commentVote.voterId === currentUserId)[0].id;
             const updatedVote = { value }
             const res = await axios.post(`${DOMAIN}/api/commentvotes/${commentVoteId}`, updatedVote)
             if (res?.data.success) {
@@ -145,16 +145,16 @@ export default function Comment(props) {
             }
             <p className="">Upvotes: {props.commentVotes.reduce((accumulator, currentValue) => accumulator + currentValue.value, 0)}
                 {user?.username !== props.username
-                    ? props.commentVotes.find((commentVote) => commentVote.voterId === userId) !== undefined && props.commentVotes.find((commentVote) => commentVote.voterId === userId).value > 0
-                        ? userId && <button onClick={neutralVote} className="px-1"><TbArrowBigUpFilled size={20} /></button>
-                        : userId && <button onClick={clickUpvote} className="px-1"><TbArrowBigUp size={20} /></button>
+                    ? props.commentVotes.find((commentVote) => commentVote.voterId === currentUserId) !== undefined && props.commentVotes.find((commentVote) => commentVote.voterId === currentUserId).value > 0
+                        ? currentUserId && <button onClick={neutralVote} className="px-1"><TbArrowBigUpFilled size={20} /></button>
+                        : currentUserId && <button onClick={clickUpvote} className="px-1"><TbArrowBigUp size={20} /></button>
                     : ""}
                 {user?.username !== props.username
-                    ? props.commentVotes.find((commentVote) => commentVote.voterId === userId) !== undefined && props.commentVotes.find((commentVote) => commentVote.voterId === userId).value < 0
-                        ? userId && <button onClick={neutralVote} className="px-1"><TbArrowBigDownFilled size={20} /></button>
-                        : userId && <button onClick={clickDownVote} className="px-1"><TbArrowBigDown size={20} /></button>
+                    ? props.commentVotes.find((commentVote) => commentVote.voterId === currentUserId) !== undefined && props.commentVotes.find((commentVote) => commentVote.voterId === currentUserId).value < 0
+                        ? currentUserId && <button onClick={neutralVote} className="px-1"><TbArrowBigDownFilled size={20} /></button>
+                        : currentUserId && <button onClick={clickDownVote} className="px-1"><TbArrowBigDown size={20} /></button>
                     : ""}
-                {userId && <button onClick={toggleReplyMode} className="px-3 font-bold">Reply</button>}
+                {currentUserId && <button onClick={toggleReplyMode} className="px-3 font-bold">Reply</button>}
             </p>
             {replyMode && <div>
                 <form onSubmit={handleReplySubmit}>
