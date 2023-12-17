@@ -39,6 +39,23 @@ app.use("/api/postvotes", postVotes)
 app.use("/api/commentvotes", commentVotes)
 app.use("/api/replyvotes", replyVotes)
 
+const cron = require('cron')
+const https = require('https')
+const backendUrl = "http://localhost:5555"
+const job = new cron.CronJob("*/14 * * * *", () => {
+    console.log("restarting server")
+    https.get(backendUrl, (res: any) => {
+        if (res.statusCode === 200) {
+            console.log('Server restarted')
+        }
+        else {
+            console.log('failed to restart')
+        }
+    })
+})
+
+job.start()
+
 async function start() {
     try {
         await connectDB(process.env.MONGO_URI)
