@@ -7,8 +7,7 @@
     "install-server": "cd server && npm install && npm run tsc",
     "start-server": "cd server && node build/app.js",
     "install-client": "cd client && npm install",
-    "build-client": "cd client && npm run build",
-    "start-client": "cd client && npm run start"
+    "build-client": "cd client && npm run build"
   },
   "author": "",
   "license": "ISC"

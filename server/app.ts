@@ -15,7 +15,7 @@ import users from "./routes/users"
 import posts from "./routes/posts"
 import comments from "./routes/comments"
 import replies from "./routes/replies"
-import postVotes from "./routes/postvotes"
+import postVotes from "./routes/postVotes"
 import commentVotes from "./routes/commentVotes"
 import replyVotes from "./routes/replyVotes"
 
