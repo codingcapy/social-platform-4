@@ -68,7 +68,7 @@ export async function getUser(req: Request, res: Response) {
     const userPosts = await Post.find({ userId: parseInt(userId) })
     const userComments = await Comment.find({ userId: parseInt(userId) })
     const userReplies = await Reply.find({ userId: parseInt(userId) })
-    res.json({ posts: userPosts, comments: userComments, replies: userReplies });
+    res.json({ user, posts: userPosts, comments: userComments, replies: userReplies });
 }
 
 export async function createUser(req: Request, res: Response) {
