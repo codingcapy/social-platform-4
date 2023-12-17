@@ -6,6 +6,6 @@ version: 1.0
 description: endpoint for CocoDogo
  */
 
-const DOMAIN = "http://localhost:5555"
+const DOMAIN = "https://cocodogoapi.onrender.com"
 
 export default DOMAIN;

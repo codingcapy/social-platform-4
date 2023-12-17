@@ -41,7 +41,7 @@ app.use("/api/replyvotes", replyVotes)
 
 const cron = require('cron')
 const https = require('https')
-const backendUrl = "http://localhost:5555"
+const backendUrl = "https://cocodogoapi.onrender.com/"
 const job = new cron.CronJob("*/14 * * * *", () => {
     console.log("restarting server")
     https.get(backendUrl, (res: any) => {
