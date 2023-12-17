@@ -18,7 +18,7 @@ import cocodog from "/cocodog.png"
 export default function Header() {
 
     const { logoutService, user } = useAuthStore((state) => state)
-    const userId = getUserIdFromToken()
+    const userId = user?.userId || null
     const { content, setContent } = useSearchStore((state) => state)
     const [expandedMenu, setExpandedMenu] = useState(window.innerWidth > 500 ? true : false)
 
@@ -42,7 +42,7 @@ export default function Header() {
             {expandedMenu && <div className="flex flex-col md:block md:py-4">
                 {!user && <NavLink to="/users/login" className="text-center py-2 md:py-4 px-5">Login</NavLink>}
                 {!user && <NavLink to="/users/signup" className="text-center py-2 md:py-4 px-5" >Signup</NavLink>}
-                {user && <NavLink to={`{toString()}`} className="text-center py-2 md:py-4 px-5">{user.username}</NavLink>}
+                {user && <NavLink to={`/users/${userId}`} className="text-center py-2 md:py-4 px-5">{user.username}</NavLink>}
                 {user && <NavLink to="/" onClick={logoutService} className="text-center py-2 md:py-4 px-5">Logout</NavLink>}
             </div>}
             {expandedMenu && <div onClick={toggleMenu} className="text-center py-2 md:py-4 text-2xl md:hidden">&#127828;</div>}

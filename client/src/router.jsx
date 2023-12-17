@@ -7,6 +7,7 @@ import SignupPage from "./pages/SignupPage";
 import PostsPage, { postsLoader } from "./pages/PostsPage";
 import CreatePostPage from "./pages/CreatePostPage";
 import PostDetailsPage, { postDetailsLoader } from "./pages/PostDetailsPage";
+import ProfilePage, { userPostsLoader } from "./pages/ProfilePage";
 
 export function Router() {
     const router = createBrowserRouter(
@@ -18,6 +19,7 @@ export function Router() {
                 <Route path="/users/signup" element={<SignupPage />} />
                 <Route path="/posts/create" element={<CreatePostPage />} />
                 <Route path="/posts/:postId" element={<PostDetailsPage />} loader={postDetailsLoader} />
+                <Route path="/users/:userId" element={<ProfilePage />} loader={userPostsLoader}/>
             </Route>
         )
     )
