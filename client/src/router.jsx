@@ -15,9 +15,9 @@ export function Router() {
         createRoutesFromElements(
             <Route element={<Layout />}>
                 <Route path="/maintenance" element={<HomePage />} loader={pageLoader} />
-                <Route path="/maintenance" element={<PostsPage />} loader={postsLoader} />
-                <Route path="/users/maintenance" element={<LoginPage />} />
-                <Route path="/users/maintenance" element={<SignupPage />} />
+                <Route path="/maintenance2" element={<PostsPage />} loader={postsLoader} />
+                <Route path="/users/maintenance3" element={<LoginPage />} />
+                <Route path="/users/maintenance4" element={<SignupPage />} />
                 <Route path="/posts/create" element={<CreatePostPage />} />
                 <Route path="/posts/:postId" element={<PostDetailsPage />} loader={postDetailsLoader} />
                 <Route path="/users/:userId" element={<ProfilePage />} loader={userPostsLoader} />
